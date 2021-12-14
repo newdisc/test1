@@ -1,0 +1,80 @@
+import React, { useEffect, useReducer } from 'react';
+import './ClassDefinitionView.css';
+import { getAllClassDefinition } from './fetch'
+import { classDefinitionReducer, initialState } from './reducer'
+import {ClassDefinition} from './type'
+import Card from 'react-bootstrap/Card'
+import Toast from 'react-bootstrap/Toast'
+import Table from 'react-bootstrap/Table'
+import Button from 'react-bootstrap/Button'
+import { FcDownload, FcRefresh } from "react-icons/fc";
+
+
+function ClassDefinitionView(){
+    const [state, dispatch] = useReducer(classDefinitionReducer, initialState)
+    const getData = () => {getAllClassDefinition(dispatch)}
+    useEffect(getData,[]);
+    return (
+        <div className="ClassDefinitionView">
+            <Toast show={!!state.error} onClose={getData} >
+                <Toast.Header>
+                    <strong className="me-auto">Issue working with ClassDefinitions</strong>
+                </Toast.Header>
+                <Toast.Body>{state.error}</Toast.Body>
+            </Toast>
+
+            <Card>
+                <Card.Header>Class Definition</Card.Header>
+                <Card.Body>
+                <Table striped bordered hover size='sm'>
+                    <thead>
+                        <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {state.classes.map((c:ClassDefinition) => (
+                        <tr key={c.name}>
+                            <td>#</td>
+                            <td>{c.name}</td>
+                            <td>{c.description}</td>
+                        </tr>
+                        ))}
+                    </tbody>
+                    </Table>
+                    <Button size="sm" variant="light" onClick={getData}> 
+                            <FcRefresh/>
+                    </Button>
+                    <Button size="sm" variant="light">
+                            <FcDownload/>
+                    </Button>
+                </Card.Body>
+            </Card>
+        </div>
+    );
+}
+
+export default ClassDefinitionView;
+
+/* FcDownload
+            {console.log("Render: ", state)}
+            {state.error}
+            {state.pending?"true":"false"}
+            {state.classes.map((cd: ClassDefinition) => (
+                <div key={cd.name}>{cd.name}<br/>{cd.description}</div>
+            ))}
+
+                    <Card.Title>Special title treatment</Card.Title>
+                    <Card.Text>
+                    With supporting text below as a natural lead-in to additional content.
+                    </Card.Text>
+
+            <Alert show={!!state.error} variant="error" >
+                <Alert.Heading>Issue working with ClassDefinitions</Alert.Heading>
+                <p>{state.error}</p>
+            </Alert>
+
+
+*/
